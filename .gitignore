@@ -1,0 +1,51 @@
+# compiled binaries and object files
+*.o
+*.out
+*.exe
+*.dll
+*.so
+*.dylib
+a.out
+main
+
+# build directories
+build/
+bin/
+obj/
+
+# os-specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ide and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# temporary files
+*.tmp
+*.bak
+*.log
+*.cache
+
+# scheme compiled files
+*.fasl
+*.dfsl
+*.cfsl
+*.com
+*.fas
+*.lib
+*.x86f
+
+# prolog compiled files
+*.qlf
