@@ -1,4 +1,8 @@
-# Cross-Language Board Game System — Proposal (One Page)
+# Proposal
+
+Team Members: [Add names here]
+
+Course: CS 396 — SEC001 — Fall 2025
 
 ## Project Title and Summary
 We’re building a small two‑player board game (Tic‑Tac‑Toe to start) to show how C++ (imperative/OOP), Prolog (logic), and Scheme (functional) can work together. C++ runs the main loop and keeps the board, Prolog checks if moves are legal (and can detect wins), and Scheme picks AI moves. The parts will talk to each other using simple text files so it’s easy to test and debug. If we have time, we’ll try to extend some ideas toward Checkers.
