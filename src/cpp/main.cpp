@@ -13,8 +13,13 @@ int main() {
     cout << "Starting with Tic-Tac-Toe (3x3)" << endl;
     cout << endl;
 
-    // TODO: create game instance
-    // Game game(3);  // 3x3 for tic-tac-toe
+    // Temporary manual Board test
+    Board b(3);
+    b.display();
+    b.setCell(0, 0, 1);
+    b.setCell(1, 1, 2);
+    cout << endl << "After two moves:" << endl;
+    b.display();
     
     // TODO: main game loop
     // while (!game.isGameOver()) {
@@ -37,7 +42,7 @@ int main() {
     // game.display();
     // announce winner or draw
     
-    cout << "Game implementation coming soon..." << endl;
+    cout << "(Temporary board test complete)" << endl;
     
     return 0;
 }

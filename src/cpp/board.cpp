@@ -14,8 +14,7 @@ using namespace std;
  * returns: Board object
  */
 Board::Board(int size) : size(size) {
-    // TODO: initialize grid with zeros (empty cells)
-    // grid = vector<vector<int>>(size, vector<int>(size, 0));
+    grid = vector<vector<int>>(size, vector<int>(size, 0));
 }
 
 /*
@@ -24,25 +23,21 @@ Board::Board(int size) : size(size) {
  * returns: void
  */
 void Board::display() const {
-    // TODO: print top border
-    // cout << "  ";
-    // for (int i = 0; i < size; i++) {
-    //     cout << i << " ";
-    // }
-    // cout << endl;
-    
-    // TODO: print each row with row number
-    // for (int i = 0; i < size; i++) {
-    //     cout << i << " ";
-    //     for (int j = 0; j < size; j++) {
-    //         if (grid[i][j] == 0) cout << ". ";
-    //         else if (grid[i][j] == 1) cout << "X ";
-    //         else cout << "O ";
-    //     }
-    //     cout << endl;
-    // }
-    
-    cout << "Board display not yet implemented" << endl;
+    cout << "  ";
+    for (int i = 0; i < size; i++) {
+        cout << i << " ";
+    }
+    cout << endl;
+
+    for (int i = 0; i < size; i++) {
+        cout << i << " ";
+        for (int j = 0; j < size; j++) {
+            if (grid[i][j] == 0) cout << ". ";
+            else if (grid[i][j] == 1) cout << "X ";
+            else cout << "O ";
+        }
+        cout << endl;
+    }
 }
 
 /*
@@ -51,15 +46,10 @@ void Board::display() const {
  * returns: int - cell value
  */
 int Board::getCell(int row, int col) const {
-    // TODO: validate bounds
-    // if (row < 0 || row >= size || col < 0 || col >= size) {
-    //     return -1;  // invalid position
-    // }
-    
-    // TODO: return grid value
-    // return grid[row][col];
-    
-    return 0; // placeholder
+    if (row < 0 || row >= size || col < 0 || col >= size) {
+        return -1;  // invalid position
+    }
+    return grid[row][col];
 }
 
 /*
@@ -68,13 +58,10 @@ int Board::getCell(int row, int col) const {
  * returns: void
  */
 void Board::setCell(int row, int col, int value) {
-    // TODO: validate bounds
-    // if (row < 0 || row >= size || col < 0 || col >= size) {
-    //     return;
-    // }
-    
-    // TODO: set grid value
-    // grid[row][col] = value;
+    if (row < 0 || row >= size || col < 0 || col >= size) {
+        return;
+    }
+    grid[row][col] = value;
 }
 
 /*
@@ -83,10 +70,7 @@ void Board::setCell(int row, int col, int value) {
  * returns: bool - true if cell is empty
  */
 bool Board::isEmpty(int row, int col) const {
-    // TODO: return true if cell value is 0
-    // return getCell(row, col) == 0;
-    
-    return false; // placeholder
+    return getCell(row, col) == 0;
 }
 
 /*
@@ -95,15 +79,12 @@ bool Board::isEmpty(int row, int col) const {
  * returns: bool - true if board is full
  */
 bool Board::isFull() const {
-    // TODO: iterate through all cells
-    // for (int i = 0; i < size; i++) {
-    //     for (int j = 0; j < size; j++) {
-    //         if (grid[i][j] == 0) return false;
-    //     }
-    // }
-    // return true;
-    
-    return false; // placeholder
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            if (grid[i][j] == 0) return false;
+        }
+    }
+    return true;
 }
 
 /*
@@ -121,11 +102,10 @@ int Board::getSize() const {
  * returns: void
  */
 void Board::reset() {
-    // TODO: set all cells to 0
-    // for (int i = 0; i < size; i++) {
-    //     for (int j = 0; j < size; j++) {
-    //         grid[i][j] = 0;
-    //     }
-    // }
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            grid[i][j] = 0;
+        }
+    }
 }
 
