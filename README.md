@@ -25,6 +25,8 @@ Project/
 - SWI-Prolog (`brew install swi-prolog` on macOS)
 - MIT Scheme or Racket (`brew install mit-scheme` on macOS)
 
+See `dependencies.txt` for tested tool versions and install notes.
+
 ### Build and Run
 
 ```bash
@@ -33,6 +35,9 @@ make
 
 # Run the game
 ./game
+
+# Note: current executable runs a temporary board display test until
+# Prolog/Scheme integration is added.
 
 # Test individual components
 make test-prolog
