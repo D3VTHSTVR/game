@@ -1,6 +1,6 @@
 # Proposal
 
-Team Members: [Add names here]
+Team Members: Victor Rodriguez, Taylor Davis, Anthony
 
 Course: CS 396 — SEC001 — Fall 2025
 
