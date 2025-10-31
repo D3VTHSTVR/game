@@ -5,7 +5,10 @@ Team Members: Victor Rodriguez, Taylor Davis, Anthony
 Course: CS 396 — SEC001 — Fall 2025
 
 ## Project Title and Summary
-We’re building a small two‑player board game (Tic‑Tac‑Toe to start) to show how C++ (imperative/OOP), Prolog (logic), and Scheme (functional) can work together. C++ runs the main loop and keeps the board, Prolog checks if moves are legal (and can detect wins), and Scheme picks AI moves. The parts will talk to each other using simple text files so it’s easy to test and debug. If we have time, we’ll try to extend some ideas toward Checkers.
+
+**Project Title**: Cross-Language Board Game System
+
+We’re building a small two‑player board game (Tic‑Tac‑Toe to start) that demonstrates how three different programming paradigms—imperative/OOP (C++), logic (Prolog), and functional (Scheme)—can integrate to solve a unified problem. C++ runs the main loop and keeps the board state, Prolog checks if moves are legal (and can detect wins), and Scheme picks AI moves. The parts will talk to each other using simple text files so it’s easy to test and debug. If we have time, we’ll try to extend some ideas toward Checkers.
 
 ## Languages Used and Roles
 - C++ (Imperative/OOP): Board representation (`Board`), controller (`Game`), CLI, file I/O to `data/`.
@@ -66,16 +69,20 @@ write move_response.txt → C++ applies move
 ```
 
 ## Technical Sketch
-- C++
-  - `class Board { display; getCell/setCell; isEmpty/isFull; reset; }`
-  - `class Game  { currentPlayer; saveBoardState(); validateMoveWithProlog(); getAIMoveFromScheme(); checkWinner(); }`
-  - `main`: loop printing board, reading input, invoking Prolog/Scheme, switching players
-- Prolog
-  - `valid_position/3`, `is_empty/3`, `valid_move/4`
-  - `check_winner/2`, `board_full/1`, `game_over/1`
-  - `validate_move`: read files → decide → write `valid|invalid`
-- Scheme
-  - `read-board-state`, `get-valid-moves`, `evaluate-position`, `minimax`, `choose-best-move`
+
+**C++ Modules:**
+- `class Board`: display, getCell/setCell, isEmpty/isFull, reset
+- `class Game`: currentPlayer, saveBoardState(), validateMoveWithProlog(), getAIMoveFromScheme(), checkWinner()
+- `main()`: game loop (print board, read input, invoke Prolog/Scheme, switch players)
+
+**Prolog Predicates:**
+- Basic checks: `valid_position/3`, `is_empty/3`, `valid_move/4`
+- Game state: `check_winner/2`, `board_full/1`, `game_over/1`
+- Entry point: `validate_move` (reads files → decides → writes `valid|invalid`)
+
+**Scheme Functions:**
+- I/O: `read-board-state`
+- Strategy: `get-valid-moves`, `evaluate-position`, `minimax`, `choose-best-move`
 
 ## Anticipated Challenges
 - Getting data to line up across languages. We’ll keep the file formats super simple (CSV lines) and add basic checks.
