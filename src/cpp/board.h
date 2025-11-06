@@ -8,68 +8,75 @@
 
 #include <vector>
 
-class Board {
+/*
+ * The Board class owns the raw grid of the game.
+ * Each cell stores an integer: 0 means empty, 1 is player one, 2 is player two.
+ * The class exposes utility helpers so the rest of the system never has to
+ * manipulate the two dimensional std::vector directly.
+ */
+class Board
+{
 private:
-    int size;                              // board dimension (3x3 or 8x8)
-    std::vector<std::vector<int>> grid;    // 0 = empty, 1 = player 1, 2 = player 2
+    /*
+     * size tracks the width and height of the square grid.
+     * For Tic-Tac-Toe the value is 3; the design allows future expansion to
+     * larger games such as Checkers by changing this single number.
+     */
+    int size;
+
+    /*
+     * grid stores rows of integers in a nested std::vector.
+     * Access is always routed through helper functions so that bounds checking
+     * and other invariants stay in one place.
+     */
+    std::vector<std::vector<int>> grid;
 
 public:
     /*
-     * Board - constructor
-     * parameters: size - dimension of board (3 for tic-tac-toe)
-     * returns: Board object
+     * Construct a board with all cells cleared to zero.
      */
     Board(int size);
-    
+
     /*
-     * display - print board to console
-     * parameters: none
-     * returns: void
+     * Render the board to stdout using friendly characters so humans can see
+     * the current state of play.
      */
     void display() const;
-    
+
     /*
-     * getCell - get value at position
-     * parameters: row, col - position to check
-     * returns: int - cell value (0, 1, or 2)
+     * Return the player token stored at the requested row and column.
+     * Out-of-range coordinates return -1 to signal an invalid lookup.
      */
     int getCell(int row, int col) const;
-    
+
     /*
-     * setCell - set value at position
-     * parameters: row, col - position to set, value - new cell value
-     * returns: void
+     * Write a player token into a cell as long as the coordinates are valid.
+     * Invalid coordinates are silently ignored because validation happens
+     * earlier in the flow.
      */
     void setCell(int row, int col, int value);
-    
+
     /*
-     * isEmpty - check if cell is empty
-     * parameters: row, col - position to check
-     * returns: bool - true if cell is empty
+     * Convenience helper that returns true when a cell contains zero.
      */
     bool isEmpty(int row, int col) const;
-    
+
     /*
-     * isFull - check if board has no empty cells
-     * parameters: none
-     * returns: bool - true if board is full
+     * Scan the entire grid to see if the game has any moves left.
      */
     bool isFull() const;
-    
+
     /*
-     * getSize - get board dimension
-     * parameters: none
-     * returns: int - board size
+     * Expose the configured board dimension for callers that need it.
      */
     int getSize() const;
-    
+
     /*
-     * reset - clear all cells
-     * parameters: none
-     * returns: void
+     * Reset every cell back to the empty state in one pass.
      */
     void reset();
-};
+}
+;
 
 #endif // BOARD_H
 

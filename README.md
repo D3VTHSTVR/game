@@ -30,19 +30,22 @@ See `dependencies.txt` for tested tool versions and install notes.
 ### Build and Run
 
 ```bash
-# Build the C++ game engine
+# Build the C++ game engine (requires g++, swipl, and mit-scheme on PATH)
 make
 
-# Run the game
+# Launch the interactive human-vs-AI Tic-Tac-Toe loop
 ./game
 
-# Note: current executable runs a temporary board display test until
-# Prolog/Scheme integration is added.
-
-# Test individual components
+# Optional: run language-specific smoke tests (stubs today)
 make test-prolog
 make test-scheme
 ```
+
+#### Gameplay Notes
+- Player 1 is the human (X); Player 2 is the Scheme AI (O) making random legal moves.
+- Enter moves as `row col` (zero-indexed). Example: `1 2` places an `X` at row 1, column 2.
+- Prolog validates every move. If a move is rejected, check that the cell is empty and within bounds.
+- Game ends automatically when someone wins or the board fills; results print at the end.
 
 ### Windows Setup Notes
 
