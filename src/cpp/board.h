@@ -1,6 +1,6 @@
 /*
  * board.h
- * Board representation and basic operations
+ * board representation and basic operations
  */
 
 #ifndef BOARD_H
@@ -8,75 +8,40 @@
 
 #include <vector>
 
-/*
- * The Board class owns the raw grid of the game.
- * Each cell stores an integer: 0 means empty, 1 is player one, 2 is player two.
- * The class exposes utility helpers so the rest of the system never has to
- * manipulate the two dimensional std::vector directly.
- */
+/* board class stores the grid and provides helper functions */
 class Board
 {
 private:
-    /*
-     * size tracks the width and height of the square grid.
-     * For Tic-Tac-Toe the value is 3; the design allows future expansion to
-     * larger games such as Checkers by changing this single number.
-     */
+    /* size of the board */
     int size;
 
-    /*
-     * grid stores rows of integers in a nested std::vector.
-     * Access is always routed through helper functions so that bounds checking
-     * and other invariants stay in one place.
-     */
+    /* 2d vector storing the board cells */
     std::vector<std::vector<int>> grid;
 
 public:
-    /*
-     * Construct a board with all cells cleared to zero.
-     */
+    /* create a board with all cells set to zero */
     Board(int size);
 
-    /*
-     * Render the board to stdout using friendly characters so humans can see
-     * the current state of play.
-     */
+    /* print the board for the user */
     void display() const;
 
-    /*
-     * Return the player token stored at the requested row and column.
-     * Out-of-range coordinates return -1 to signal an invalid lookup.
-     */
+    /* get the value of a cell or -1 if invalid */
     int getCell(int row, int col) const;
 
-    /*
-     * Write a player token into a cell as long as the coordinates are valid.
-     * Invalid coordinates are silently ignored because validation happens
-     * earlier in the flow.
-     */
+    /* set a cell value if the coordinates are valid */
     void setCell(int row, int col, int value);
 
-    /*
-     * Convenience helper that returns true when a cell contains zero.
-     */
+    /* check if a cell is empty */
     bool isEmpty(int row, int col) const;
 
-    /*
-     * Scan the entire grid to see if the game has any moves left.
-     */
+    /* check if the board has any empty cells left */
     bool isFull() const;
 
-    /*
-     * Expose the configured board dimension for callers that need it.
-     */
+    /* get the board dimension */
     int getSize() const;
 
-    /*
-     * Reset every cell back to the empty state in one pass.
-     */
+    /* clear all cells back to zero */
     void reset();
-}
-;
+};
 
 #endif // BOARD_H
-

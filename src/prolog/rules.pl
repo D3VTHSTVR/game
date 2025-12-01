@@ -1,83 +1,81 @@
-/* rules.pl
- * Game rules and move validation in Prolog
- *
- * Prolog acts as the rules referee. It reads the board state written by C++,
- * performs legality checks, and then returns either "valid" or "invalid" to
- * the C++ driver. The predicates below mirror the file formats documented in
- * data/README.md so future maintainers can cross-reference quickly.
- */
-
-/*
- * Import a few helper libraries: readutil for reading entire lines and lists
- * for convenient nth0/3 accessors.
- */
+% load library to read lines from files
 :- use_module(library(readutil)).
+
+% load list utilities for nth0 and maplist
 :- use_module(library(lists)).
 
-/*
- * Centralize the filenames so we only change them in one place if necessary.
- */
+% store the path to the board state file
 state_file('data/current_state.txt').
+
+% store the path to the move query file
 query_file('data/move_query.txt').
+
+% store the path to the response file
 response_file('data/move_response.txt').
 
-/*
- * read_board_state(-Board, -Size, -CurrentPlayer)
- * Reads the state file and returns the parsed board as a list of lists along
- * with the size and the player whose turn it is.
- */
+% reads the board file and extracts Board, Size, and CurrentPlayer
 read_board_state(Board, Size, CurrentPlayer) :-
+    % get the path to the state file
     state_file(Path),
+    % safely open and close the file while reading content
     setup_call_cleanup(
         open(Path, read, Stream),
+        % read structured data from the file
         read_board_stream(Stream, Board, Size, CurrentPlayer),
         close(Stream)
     ).
 
-/*
- * Helper for read_board_state/3 that consumes the stream in the order written
- * by the C++ code: first the board size, then each row, and finally the current
- * player identifier.
- */
+% reads the board size, N rows, and current player from a stream
 read_board_stream(Stream, Board, Size, CurrentPlayer) :-
+    % read first line as codes for board size
     read_line_to_codes(Stream, SizeCodes),
+    % convert codes to number for board size
     number_codes(Size, SizeCodes),
+    % read next Size lines as board rows
     read_board_rows(Stream, Size, Board),
+    % read the final line as player number codes
     read_line_to_codes(Stream, PlayerCodes),
+    % convert to numeric player value
     number_codes(CurrentPlayer, PlayerCodes).
 
-/*
- * read_board_rows(+Stream, +N, -Rows)
- * Recursively read N lines and split each one into a list of integers.
- */
+% base case: no more rows to read when N = 0
 read_board_rows(_, 0, []) :- !.
+
+% recursively read N rows from the stream
 read_board_rows(Stream, N, [Row|Rest]) :-
+    % read one line of CSV codes
     read_line_to_codes(Stream, LineCodes),
+    % convert CSV codes to list of numbers
     split_codes_to_numbers(LineCodes, Row),
+    % decrement remaining rows
     N1 is N - 1,
+    % recursively read remaining rows
     read_board_rows(Stream, N1, Rest).
 
-/*
- * split_codes_to_numbers(+Codes, -Numbers)
- * Convert a CSV line represented as character codes into a list of ints.
- */
+% converts character codes for a CSV line into actual numbers
 split_codes_to_numbers(Codes, Numbers) :-
+    % convert codes to string
     string_codes(Str, Codes),
+    % split by commas ignoring whitespace
     split_string(Str, ",", " \t\r\n", Parts),
+    % convert each substring into a number
     maplist(number_string, Numbers, Parts).
 
-/*
- * read_move_query(-Row, -Col, -Player)
- * Load the move requested by C++ so we can validate it.
- */
+% reads Row, Col, and Player from the move query file
 read_move_query(Row, Col, Player) :-
+    % get query file path
     query_file(Path),
+    % safely open and close while reading
     setup_call_cleanup(
         open(Path, read, Stream),
         (
+            % read one line of input codes
             read_line_to_codes(Stream, LineCodes),
+            % convert into a Prolog string
             string_codes(Line, LineCodes),
+            % split into row, col, player substrings
             split_string(Line, ",", " \t\r\n", [RowStr, ColStr, PlayerStr]),
+            % convert each substring into numbers
             number_string(Row, RowStr),
             number_string(Col, ColStr),
             number_string(Player, PlayerStr)
@@ -85,96 +83,87 @@ read_move_query(Row, Col, Player) :-
         close(Stream)
     ).
 
-/*
- * valid_position(+Index, +Size)
- * Ensure a row or column index falls within the board boundaries.
- */
+% checks that Index is within the board range 0 .. Size-1
 valid_position(Index, Size) :-
+    % lower bound check
     Index >= 0,
+    % upper bound check
     Index < Size.
 
-/*
- * is_empty(+Board, +Row, +Col)
- * Succeeds when the board cell holds zero.
- */
+% checks if a specific board cell contains a zero
 is_empty(Board, Row, Col) :-
+    % extract row at index Row
     nth0(Row, Board, BoardRow),
+    % extract cell value at col and ensure it is zero
     nth0(Col, BoardRow, 0).
 
-/*
- * valid_player(+Player)
- * Both human and AI are represented as integer identifiers.
- */
+% valid players are 1 (human) and 2 (AI)
 valid_player(1).
 valid_player(2).
 
-/*
- * valid_move(+Board, +Row, +Col, +Player)
- * Combines all simple checks into one predicate. Anything more complicated can
- * be layered on top in future assignments.
- */
+% checks whether a move is legal in terms of bounds, player, and emptiness
 valid_move(Board, Row, Col, Player) :-
+    % compute board size
     length(Board, Size),
+    % verify row is in bounds
     valid_position(Row, Size),
+    % verify col is in bounds
     valid_position(Col, Size),
+    % verify the player number is valid
     valid_player(Player),
+    % verify the target cell is empty
     is_empty(Board, Row, Col).
 
-/*
- * all_same_nonzero(+List, -Value)
- * True when every element matches a non-zero value. Used to detect wins.
- */
+% succeeds when List has all same non-zero value and binds Value
 all_same_nonzero([Value|Rest], Value) :-
+    % ensure leading element is not zero
     Value \= 0,
+    % ensure entire list matches Value
     maplist(=(Value), Rest).
 
-/*
- * row_winner(+Board, -Winner)
- * Check each row for a winning line.
- */
+% checks each row of the board to see if it contains a winning line
 row_winner(Board, Winner) :-
+    % pick one row from the board
     member(Row, Board),
+    % test if row has all same non-zero values
     all_same_nonzero(Row, Winner).
 
-/*
- * column_values(+Board, +ColIndex, -Values)
- * Collect all values in a column so they can be tested by all_same_nonzero/2.
- */
+% collects all values in column ColIndex into Values list
 column_values(Board, ColIndex, Values) :-
+    % gather Values from each row at given column
     findall(Value,
             ( nth0(_, Board, Row),
               nth0(ColIndex, Row, Value)
             ),
             Values).
 
-/*
- * column_winner(+Board, -Winner)
- * Detect vertical wins by scanning every column index.
- */
+% checks all columns to find a winning column
 column_winner(Board, Winner) :-
+    % compute board size
     length(Board, Size),
+    % iterate over all column indices
     between(0, Size - 1, ColIndex),
+    % collect column values
     column_values(Board, ColIndex, Values),
+    % test if column forms a win
     all_same_nonzero(Values, Winner).
 
-/*
- * diag_values(+Board, -Values)
- * Gather the main diagonal (top-left to bottom-right).
- */
+% extracts main diagonal values from board
 diag_values(Board, Values) :-
+    % collect diagonal elements where row index = col index
     findall(Value,
             ( nth0(Index, Board, Row),
               nth0(Index, Row, Value)
             ),
             Values).
 
-/*
- * anti_diag_values(+Board, -Values)
- * Gather the anti-diagonal (top-right to bottom-left).
- */
+% extracts anti-diagonal values from board
 anti_diag_values(Board, Values) :-
+    % compute board size
     length(Board, Size),
+    % compute largest index
     MaxIndex is Size - 1,
+    % pick value at row i, col (MaxIndex - i)
     findall(Value,
             ( nth0(Index, Board, Row),
               ColIndex is MaxIndex - Index,
@@ -182,76 +171,82 @@ anti_diag_values(Board, Values) :-
             ),
             Values).
 
-/*
- * check_winner(+Board, -Winner)
- * Try every win detection strategy until one succeeds.
- */
+% checks rows, columns, and diagonals for a winner
 check_winner(Board, Winner) :-
-    (   row_winner(Board, Winner)
-    ;   column_winner(Board, Winner)
-    ;   diag_values(Board, Diag),
-        all_same_nonzero(Diag, Winner)
-    ;   anti_diag_values(Board, AntiDiag),
-        all_same_nonzero(AntiDiag, Winner)
-    ).
+    % check any row win
+    row_winner(Board, Winner)
+    % check any column win
+    ; column_winner(Board, Winner)
+    % check main diagonal win
+    ; diag_values(Board, Diag),
+      all_same_nonzero(Diag, Winner)
+    % check anti-diagonal win
+    ; anti_diag_values(Board, AntiDiag),
+      all_same_nonzero(AntiDiag, Winner).
 
-/*
- * board_full(+Board)
- * True when there are no zeros left anywhere on the board.
- */
+% true when the board contains no zero values
 board_full(Board) :-
+    % ensure no row contains a zero anywhere
     \+ (member(Row, Board), member(0, Row)).
 
-/*
- * game_over(+Board)
- * Useful helper predicate should we expand the Prolog feature set later.
- */
+% true when the board has a winner or is full
 game_over(Board) :-
+    % any win ends the game
     check_winner(Board, _)
+    % full board also ends game
     ; board_full(Board).
 
-/*
- * write_response(+Response)
- * Write the final verdict back to the file C++ reads after the swipl call.
- */
+% writes "valid" or "invalid" into the response file
 write_response(Response) :-
+    % get file path
     response_file(Path),
+    % safely open and close the output stream
     setup_call_cleanup(
         open(Path, write, Stream),
-        ( write(Stream, Response), nl(Stream) ),
+        (
+            % write the outcome atom
+            write(Stream, Response),
+            % write newline terminator
+            nl(Stream)
+        ),
         close(Stream)
     ).
 
-/*
- * validate_move/0 is the entry point invoked from the command line. Errors are
- * caught so the C++ caller always receives a response instead of hanging.
- */
+% validates a move by comparing player turn and board rules
 validate_move :-
+    % catch any errors so C++ receives a response
     catch(
         (
+            % load board state
             read_board_state(Board, _Size, CurrentPlayer),
+            % load move query
             read_move_query(Row, Col, Player),
+            % verify player turn and legality
             (   Player =:= CurrentPlayer,
                 valid_move(Board, Row, Col, Player)
+            % if valid, write "valid"
             ->  write_response(valid)
+            % otherwise write "invalid"
             ;   write_response(invalid)
             )
         ),
         Error,
         (
+            % print error for debugging
             print_message(error, Error),
+            % respond with invalid on error
             write_response(invalid)
         )
     ),
+    % cut to prevent backtracking
     !.
 
-/*
- * Hook validate_move/0 up to the SWI-Prolog initialization mechanism so the
- * script behaves like a tiny command line tool.
- */
+% run validate_move automatically when called from command line
 :- initialization(main).
 
+% main entry point for SWI-Prolog execution
 main :-
+    % run validate_move but ignore success/failure result
     ( validate_move -> true ; true ),
+    % halt Prolog runtime
     halt.
-
