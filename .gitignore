@@ -1,51 +1,36 @@
-# compiled binaries and object files
-*.o
-*.out
-*.exe
-*.dll
-*.so
-*.dylib
-a.out
-main
+# ==== Build artifacts ====
+/build/
+/game          # compiled executable
 
-# build directories
-build/
-bin/
-obj/
+# ==== Runtime-generated game state files ====
+/data/current_state.txt
+/data/move_query.txt
+/data/move_response.txt
 
-# os-specific files
+# ==== macOS system files ====
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
 
-# ide and editor files
-.vscode/
-.idea/
+# ==== Editor/Vim temp files ====
 *.swp
 *.swo
-*~
-.project
-.classpath
-.settings/
 
-# temporary files
-*.tmp
-*.bak
-*.log
-*.cache
+# ==== Racket / Scheme caches ====
+compiled/
+*.zo
+*.rkt~    # backup files
 
-# scheme compiled files
-*.fasl
-*.dfsl
-*.cfsl
-*.com
-*.fas
-*.lib
-*.x86f
-
-# prolog compiled files
+# ==== Prolog temp/cache files ====
 *.qlf
+*.prolog_history
+
+# ==== C++ specific ====
+*.o
+*.out
+*.obj
+*.exe
+
+# ==== Logs ====
+*.log
+
+# ==== Misc ====
+*~          # backup files

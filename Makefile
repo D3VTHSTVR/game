@@ -25,8 +25,14 @@ $(TARGET): $(OBJECTS)
 
 # clean build artifacts
 clean:
-	rm -rf $(BUILD_DIR) $(TARGET)
-	rm -f data/*.txt
+	@if [ "$(OS)" = "Windows_NT" ]; then \
+		powershell -Command "if (Test-Path '$(BUILD_DIR)') { Remove-Item '$(BUILD_DIR)' -Recurse -Force }" ; \
+		powershell -Command "if (Test-Path '$(TARGET)') { Remove-Item '$(TARGET)' -Force }" ; \
+		powershell -Command "if (Test-Path 'data') { Get-ChildItem 'data' -Filter *.txt | Remove-Item -Force }" ; \
+	else \
+		rm -rf $(BUILD_DIR) $(TARGET) ; \
+		rm -f data/*.txt ; \
+	fi
 
 # test prolog rules
 test-prolog:

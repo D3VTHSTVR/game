@@ -1,67 +1,79 @@
-# Data Directory
+# Cross-Language Tic-Tac-Toe Project
 
-This directory contains files used for inter-process communication between C++, Scheme, and Prolog.
+This project is a demonstration of integrating multiple programming languages into one system. It combines **C++**, **Prolog**, and **Racket Scheme** to create a playable Tic-Tac-Toe game where C++ runs the main gameplay loop, Prolog validates moves, and Racket Scheme provides the AI using a minimax algorithm.
 
-## File Formats
+The languages communicate through shared text files in the `data/` directory.
 
-### current_state.txt
-Current board state written by C++, read by Scheme and Prolog.
+## How to Build and Run
 
-Format:
-```
-<size>
-<row0_values>
-<row1_values>
-...
-<current_player>
-```
+### 1. Install dependencies
 
-Example (3x3 tic-tac-toe):
-```
-3
-0,0,1
-0,2,0
-1,0,0
-2
-```
+Make sure you have:
 
-### move_query.txt
-Move validation request written by C++, read by Prolog.
+- **g++** with C++17 support
+- **SWI-Prolog**
 
-Format:
-```
-<row>,<col>,<player>
+  ```
+  brew install swi-prolog
+  ```
+
+- **Racket**
+
+  ```
+  brew install --cask racket
+  ```
+
+### 2. Build the project
+
+Run:
+
+```bash
+make
 ```
 
-Example:
-```
-1,1,2
+This compiles the C++ files into an executable named:
+
+```bash
+./game
 ```
 
-### move_response.txt
-Response from Prolog (move validation) or Scheme (AI move).
+### 3. Run the game
 
-Prolog validation response:
-```
-valid
-```
-or
-```
-invalid
+```bash
+./game
 ```
 
-Scheme AI move response:
+Moves are entered as:
+
 ```
-<row>,<col>
+row col
 ```
 
-Example:
-```
-0,2
-```
+Player 1 is the human. Player 2 is the Scheme AI.
 
-## Notes
-- Files are created/overwritten by components as needed
-- Simple text format for easy debugging
-- Can be inspected manually during development
+## How the System Works
 
+### C++ (main engine)
+
+- Runs the UI and game loop
+- Writes board state to a shared text file
+- Calls Prolog to validate human and AI moves
+- Calls Scheme when it’s the AI’s turn
+- Reads Scheme output and applies the chosen move
+
+### Prolog (rules checker)
+
+- Reads the board state from `data/current_state.txt`
+- Reads the proposed move from `data/move_query.txt`
+- Determines whether the move is valid or invalid
+- Writes the verdict to `data/move_response.txt`
+
+### Racket Scheme (AI)
+
+- Reads board state from `current_state.txt`
+- Uses minimax to pick the strongest move
+- Writes the chosen coordinates to `move_response.txt`
+
+## Summary
+
+This project demonstrates a clean cross-language architecture using a simple text-file protocol. Each language handles a different part of the logic: C++ controls the game, Prolog validates rules, and Scheme provides the AI. The system is designed to be easy to understand, extend, and debug.

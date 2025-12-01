@@ -1,0 +1,29 @@
+# Project Dependencies and Versions
+
+# OS
+macOS: Darwin 25.0.0 (arm64)
+Kernel: Darwin Kernel Version 25.0.0
+
+# C++ Compiler
+C++: Apple clang version 17.0.0 (clang-1700.3.19.1)
+C++ Standard: C++17 (as set in Makefile)
+
+# Prolog (required)
+Prolog: SWI-Prolog (swipl) — NOT DETECTED
+Install (macOS): brew install swi-prolog
+Expected version: 9.x or later
+
+# Scheme (required)
+Scheme: MIT Scheme — NOT DETECTED
+Install (macOS): brew install mit-scheme
+Expected version: 11.x or later
+
+# Build Tools
+Make: preinstalled on macOS (used via Makefile)
+
+# Notes
+- See README.md and docs/quick_start.md for setup and verification commands.
+- After installing Prolog and Scheme, verify with:
+  - swipl --version
+  - scheme --version
+- The Makefile targets `test-prolog` and `test-scheme` assume these tools are available on PATH.
